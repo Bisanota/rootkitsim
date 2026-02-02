@@ -1,0 +1,272 @@
+WARNING: This is just for a activity. Yeah, I used ChatGPT to be helped with this hahah
+SIMULADOR DE ROOTKIT Y ANTIROOTKIT
+DOCUMENTO DE EXPLICACION TECNICA
+================================
+
+1. INTRODUCCION
+---------------
+
+Este proyecto consiste en dos scripts en Bash:
+
+- sim_rootkit.sh     (simulador de rootkit)
+- anti_rootkit.sh    (simulador de antirootkit)
+
+Ambos scripts forman un sistema completamente controlado que simula
+el comportamiento general de un rootkit real y su posterior deteccion
+y eliminacion, SIN implementar tecnicas reales de malware.
+
+El objetivo es educativo:
+- Comprender como funciona un rootkit a nivel conceptual
+- Entender que busca un antirootkit
+- Simular el ciclo: infeccion -> deteccion -> limpieza
+
+En ningun momento:
+- Se modifica el kernel
+- Se usan modulos del kernel
+- Se ocultan procesos realmente
+- Se altera el arranque del sistema
+- Se compromete la seguridad del sistema operativo
+
+Todo ocurre en user-space y dentro del directorio HOME del usuario.
+
+------------------------------------------------------------
+
+2. CONTEXTO: QUE HACE UN ROOTKIT REAL (TEORIA)
+----------------------------------------------
+
+Un rootkit real suele buscar:
+
+- Persistencia en el sistema
+- Ocultacion de procesos y archivos
+- Ejecucion silenciosa
+- Control prolongado del sistema
+
+Para lograr esto, un rootkit real podria usar:
+
+- Modulos del kernel
+- Hooking de llamadas al sistema
+- Manipulacion de /proc y /sys
+- Alteracion de binarios del sistema
+- Intercepcion de librerias dinamicas (LD_PRELOAD)
+- Servicios de arranque persistentes
+
+NINGUNA de estas tecnicas se usa en este proyecto.
+
+Este proyecto solo simula los EFECTOS visibles,
+no los MECANISMOS reales.
+
+------------------------------------------------------------
+
+3. FUNCIONAMIENTO DEL SIMULADOR DE ROOTKIT (sim_rootkit.sh)
+-----------------------------------------------------------
+
+El script sim_rootkit.sh simula una infeccion siguiendo
+una secuencia logica similar a un rootkit real.
+
+3.1 CREACION DE UN ESPACIO "OCULTO"
+----------------------------------
+
+El script crea el directorio:
+
+  ~/.simrootkit
+
+Este directorio representa el lugar donde un rootkit real
+almacenaria sus componentes internos.
+
+Caracteristicas:
+- Esta dentro del HOME del usuario
+- No requiere privilegios de root
+- No modifica rutas del sistema
+- Puede eliminarse facilmente
+
+El caracter "oculto" es solo conceptual.
+
+------------------------------------------------------------
+
+3.2 SIMULACION DE UN PROCESO MALICIOSO
+-------------------------------------
+
+El script ejecuta un proceso totalmente inocuo:
+
+  sleep 999999
+
+Este proceso:
+- No hace nada
+- No accede a red
+- No lee ni escribe archivos
+- No interactua con el sistema
+
+Su unico proposito es existir.
+
+El PID de este proceso se guarda en un archivo de estado
+para simular un proceso malicioso activo.
+
+En un rootkit real, este proceso estaria oculto.
+Aqui NO se oculta realmente, solo se marca como "oculto" en la simulacion.
+
+------------------------------------------------------------
+
+3.3 PERSISTENCIA SIMULADA
+------------------------
+
+El rootkit guarda informacion en un archivo de estado, por ejemplo:
+
+- Estado de infeccion
+- PID del proceso simulado
+- Fecha de instalacion
+
+Esto representa la persistencia de un rootkit real,
+pero sin modificar:
+
+- systemd
+- cron
+- scripts de arranque
+- configuraciones globales
+
+La persistencia es solo logica, no real.
+
+------------------------------------------------------------
+
+3.4 RESULTADO DE LA SIMULACION
+-----------------------------
+
+Despues de ejecutar sim_rootkit.sh:
+
+- El sistema NO esta comprometido
+- Existe un directorio controlado
+- Existe un proceso inofensivo
+- El estado de "infeccion" es solo conceptual
+
+El usuario experimenta la idea de una infeccion,
+no una infeccion real.
+
+------------------------------------------------------------
+
+4. FUNCIONAMIENTO DEL ANTIROOTKIT (anti_rootkit.sh)
+---------------------------------------------------
+
+El antirootkit simula una herramienta defensiva.
+
+No detecta malware real.
+No analiza el kernel.
+No inspecciona binarios del sistema.
+
+Solo busca indicadores simulados.
+
+------------------------------------------------------------
+
+4.1 ESCANEO DEL SISTEMA
+----------------------
+
+El antirootkit verifica:
+
+- Existencia del directorio ~/.simrootkit
+- Existencia de archivos de estado
+- Existencia de un PID asociado
+
+Esto representa como un antirootkit real buscaria:
+
+- Firmas conocidas
+- Rastros de persistencia
+- Indicadores de compromiso (IoC)
+
+------------------------------------------------------------
+
+4.2 DETECCION
+-------------
+
+Si los indicadores existen, el antirootkit:
+
+- Declara el sistema "infectado (simulacion)"
+- Muestra mensajes de alerta
+- Procede a la limpieza
+
+La deteccion se basa en estado conocido,
+no en heuristica real.
+
+------------------------------------------------------------
+
+4.3 LIMPIEZA Y RESTAURACION
+--------------------------
+
+El antirootkit realiza tres acciones:
+
+1. Termina el proceso simulado (sleep)
+2. Elimina el directorio ~/.simrootkit
+3. Borra todos los archivos de estado
+
+Despues de esto:
+- No quedan procesos activos
+- No quedan archivos residuales
+- El sistema vuelve exactamente a su estado original
+
+------------------------------------------------------------
+
+5. RELACION ENTRE ROOTKIT Y ANTIROOTKIT
+--------------------------------------
+
+Ambos scripts forman un sistema cerrado:
+
+- El rootkit deja marcas conocidas
+- El antirootkit sabe exactamente que buscar
+- No interactuan con el resto del sistema
+
+Esto permite:
+- Repetir la simulacion indefinidamente
+- Probar deteccion y limpieza sin riesgo
+- Entender la logica atacante/defensor
+
+------------------------------------------------------------
+
+6. POR QUE ESTO ES UNA SIMULACION Y NO UN ROOTKIT REAL
+-----------------------------------------------------
+
+Este proyecto NO es un rootkit real porque:
+
+- No oculta procesos realmente
+- No modifica el kernel
+- No requiere privilegios de administrador
+- No altera el arranque del sistema
+- No implementa evasiones reales
+- No afecta a otros usuarios
+
+Todo el comportamiento "malicioso":
+- Es visible
+- Es reversible
+- Es limitado al usuario actual
+- Es intencionalmente inocuo
+
+Se simulan los EFECTOS, no las TECNICAS.
+
+------------------------------------------------------------
+
+7. VALOR EDUCATIVO
+------------------
+
+Este simulador permite aprender:
+
+- Como se estructura un rootkit conceptualmente
+- Que rastros deja una infeccion
+- Como funciona una herramienta defensiva
+- El concepto de indicadores de compromiso (IoC)
+- El ciclo completo de ataque y defensa
+
+Todo de forma:
+- Segura
+- Etica
+- Reversible
+- Controlada
+
+------------------------------------------------------------
+
+8. CONCLUSION
+-------------
+
+Este proyecto demuestra que es posible estudiar rootkits
+y antirootkits sin desarrollar software peligroso.
+
+La simulacion permite adquirir conocimiento real
+sobre seguridad defensiva, analisis forense y arquitectura
+de malware, sin comprometer el sistema ni cruzar limites eticos.
+
+FIN DEL DOCUMENTO
